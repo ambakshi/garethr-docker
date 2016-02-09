@@ -113,6 +113,15 @@ class docker::service (
         force   => true,
         content => template($template),
         notify  => Service['docker'],
+      } ->
+      ini_subsetting {'service options':
+        ensure            => absent,
+        section           => '',
+        key_val_separator => '=',
+        path              => "/etc/default/${service_name}",
+        setting           => 'OPTIONS',
+        subsetting        => '-d',
+        value             => '',
       }
 
     }
@@ -152,6 +161,15 @@ class docker::service (
         content => template("docker/etc/sysconfig/${template}"),
         before  => Service['docker'],
         notify  => Service['docker'],
+      } ->
+      ini_subsetting {'docker options':
+        ensure            => absent,
+        section           => '',
+        key_val_separator => '=',
+        path              => '/etc/sysconfig/docker',
+        setting           => 'OPTIONS',
+        subsetting        => '-d',
+        value             => '',
       }
 
       file { '/etc/sysconfig/docker-storage':
